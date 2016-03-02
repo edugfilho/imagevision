@@ -6,14 +6,14 @@ as well as those methods defined in an API.
 
 
 import endpoints
+import faces
 from protorpc import messages
 from protorpc import message_types
 from protorpc import remote
 
-
 # TODO: Replace the following lines with client IDs obtained from the APIs
 # Console or Cloud Console.
-WEB_CLIENT_ID = 'replace this with your web client application ID'
+WEB_CLIENT_ID = 'AIzaSyBxlJzA8LRD33DPlnpX1MUuJKPNbumwQ5o'
 ANDROID_CLIENT_ID = 'replace this with your Android client ID'
 IOS_CLIENT_ID = 'replace this with your iOS client ID'
 ANDROID_AUDIENCE = WEB_CLIENT_ID

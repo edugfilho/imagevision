@@ -23,7 +23,7 @@ google.appengine.samples.hello = google.appengine.samples.hello || {};
  * @type {string}
  */
 google.appengine.samples.hello.CLIENT_ID =
-    'replace this with your web application client ID';
+    '207871689117-rvfvr41oi0pj1nnnsigvk8u2voh9fmhe.apps.googleusercontent.com';
 
 /**
  * Scopes used by the application.
