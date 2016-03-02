@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -6,6 +7,7 @@ __pycache__/
 # C extensions
 *.so
 
+<<<<<<< HEAD
 # Distribution / packaging
 .Python
 env/
@@ -60,3 +62,35 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
+=======
+# Packages
+*.egg
+*.egg-info
+dist
+build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+lib
+lib64
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+
+# Translations
+*.mo
+
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
+>>>>>>> 8726d10cdc5ef88fbb721b9b23cfb3df551056b5
