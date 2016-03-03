@@ -3,6 +3,7 @@ from google.appengine.ext import blobstore
 from google.appengine.ext import ndb
 from google.appengine.ext.webapp import blobstore_handlers
 import webapp2
+from faces import Faces
 
 
 # This datastore model keeps track of which users uploaded which photos.
@@ -34,7 +35,10 @@ class ViewPhotoHandler(blobstore_handlers.BlobstoreDownloadHandler):
         if not blobstore.get(photo_key):
             self.error(404)
         else:
-            self.send_blob(photo_key)
+            base64Img = blobstore.fetch_data(photo_key, 0, blobstore.MAX_BLOB_FETCH_SIZE - 1)
+            Faces.process_pic(base64Img)
+            self.response.out.write(base64Img)
+            #self.send_blob(photo_key)
 # [END download_handler]
 
 
