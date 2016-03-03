@@ -15,6 +15,8 @@ api_version: 1
 # Handlers tell App Engine how to route requests to your application.
 handlers:
 
+- url: /photo.*
+  script: photo.app
 # The following three handlers route requests to static resources: JS, CSS,
 # and HTML.
 - url: /js

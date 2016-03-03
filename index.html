@@ -78,6 +78,11 @@
         <div><input id="authedGreeting" type="submit" class="btn btn-small" disabled value="Submit"></div>
     </form>
 
+    <form onsubmit="return false">
+        Upload File: <input type="file" name="file"><br>
+        <div><input id="file" type="submit" name="file" value="Submit"></div>
+    </form>
+
     <script>
         function init() {
             google.appengine.samples.hello.init('//' + window.location.host + '/_ah/api');

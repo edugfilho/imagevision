@@ -1,8 +1,13 @@
 import argparse
 import base64
-
-from PIL import Image
-from PIL import ImageDraw
+try:
+    from PIL import Image
+except:
+    import Image
+try:
+    from PIL import ImageDraw
+except:
+    import ImageDraw
 
 from googleapiclient import discovery
 import httplib2

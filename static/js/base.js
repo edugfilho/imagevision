@@ -171,6 +171,23 @@ google.appengine.samples.hello.enableButtons = function() {
   signinButton.addEventListener('click', google.appengine.samples.hello.auth);
 };
 
+  //===================================================
+google.appengine.samples.hello.setUploadUrl = function() {
+  gapi.client.helloworld.upload.link().execute(
+      function(resp) {
+        document.querySelector('#formUpload').setAttribute('action',resp.message);
+      });
+};
+
+ // var authedGreeting = document.querySelector('#file');
+  //authedGreeting.addEventListener('click',
+ //     google.appengine.samples.hello.fileupload);
+
+
+
+  //====================================================
+
+
 /**
  * Initializes the application.
  * @param {string} apiRoot Root of the API's path.
@@ -181,6 +198,7 @@ google.appengine.samples.hello.init = function(apiRoot) {
   var apisToLoad;
   var callback = function() {
     if (--apisToLoad == 0) {
+      google.appengine.samples.hello.setUploadUrl();
       google.appengine.samples.hello.enableButtons();
       google.appengine.samples.hello.signin(true,
           google.appengine.samples.hello.userAuthed);
