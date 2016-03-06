@@ -1,7 +1,12 @@
 from PIL import Image
 from PIL import ImageDraw
+from google.appengine.api import images
 from oauth2client.client import GoogleCredentials
 from googleapiclient import discovery
+import base64
+import os
+
+
 
 
 
@@ -16,7 +21,6 @@ class Faces:
                                discoveryServiceUrl=self.DISCOVERY_URL)
 
     def detect_face(self, face_file, max_results=4):
-        import base64
 
         """Uses the Vision API to detect faces in the given file.
 
@@ -29,7 +33,7 @@ class Faces:
         image_content = face_file
         batch_request = [{
             'image': {
-                'content': base64.b64encode(image_content)
+                'content': base64.b64encode(image_content.open().read())
                 },
             'features': [{
                 'type': 'FACE_DETECTION',
@@ -46,7 +50,7 @@ class Faces:
         return response['responses'][0]['faceAnnotations']
 
 
-    def highlight_faces(self, image, faces):
+    def highlight_faces(self, blob_info, faces):
         """Draws a polygon around the faces, then saves to output_filename.
 
         Args:
@@ -56,7 +60,10 @@ class Faces:
           output_filename: the name of the image file to be created, where the faces
               have polygons drawn around them.
         """
-        im = Image.open(image)
+        #from StringIO import StringIO
+        #image_string = StringIO(base64.b64decode(image))
+        #image_string.seek(0)
+        im = Image.open(blob_info.open())
         draw = ImageDraw.Draw(im)
 
         for face in faces:
@@ -66,10 +73,16 @@ class Faces:
         del draw
         return im
 
-    def process_pic(self, image):
-        faces = self.detect_face(self, image)
-        print('Found %s face%s' % (len(faces), '' if len(faces) == 1 else 's'))
+    def process_pic(self, blob_info):
+        from StringIO import StringIO
+        faces = self.detect_face(blob_info)
+        #blob_info.open().seek(0)
+        #print('Found %s face%s' % (len(faces), '' if len(faces) == 1 else 's'))
 
-        # Reset the file pointer, so we can read the file again
-        image.seek(0)
-        self.highlight_faces(self, image, faces)
+        text_img = self.highlight_faces(blob_info, faces)
+        output = StringIO()
+        text_img.save(output, format="png")
+        text_layer = output.getvalue()
+        output.close()
+
+        return text_layer

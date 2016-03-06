@@ -35,9 +35,11 @@ class ViewPhotoHandler(blobstore_handlers.BlobstoreDownloadHandler):
         if not blobstore.get(photo_key):
             self.error(404)
         else:
-            base64Img = blobstore.fetch_data(photo_key, 0, blobstore.MAX_BLOB_FETCH_SIZE - 1)
-            Faces.process_pic(base64Img)
-            self.response.out.write(base64Img)
+            #base64Img = blobstore.fetch_data(photo_key, 0, blobstore.MAX_BLOB_FETCH_SIZE - 1)
+            blobinfo = blobstore.get(blob_key=photo_key)
+            faces = Faces()
+            self.response.headers['Content-Type'] = "image/png"
+            self.response.out.write(faces.process_pic(blobinfo))
             #self.send_blob(photo_key)
 # [END download_handler]
 
