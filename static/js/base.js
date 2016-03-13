@@ -46,7 +46,6 @@ google.appengine.samples.hello.userAuthed = function() {
     if (!resp.code) {
       google.appengine.samples.hello.signedIn = true;
       document.querySelector('#signinButton').textContent = 'Sign out';
-      document.querySelector('#authedGreeting').disabled = false;
     }
   });
 };
@@ -72,7 +71,6 @@ google.appengine.samples.hello.auth = function() {
   } else {
     google.appengine.samples.hello.signedIn = false;
     document.querySelector('#signinButton').textContent = 'Sign in';
-    document.querySelector('#authedGreeting').disabled = true;
   }
 };
 
@@ -146,27 +144,6 @@ google.appengine.samples.hello.authedGreeting = function(id) {
  * Enables the button callbacks in the UI.
  */
 google.appengine.samples.hello.enableButtons = function() {
-  var getGreeting = document.querySelector('#getGreeting');
-  getGreeting.addEventListener('click', function(e) {
-    google.appengine.samples.hello.getGreeting(
-        document.querySelector('#id').value);
-  });
-
-  var listGreeting = document.querySelector('#listGreeting');
-  listGreeting.addEventListener('click',
-      google.appengine.samples.hello.listGreeting);
-
-  var multiplyGreetings = document.querySelector('#multiplyGreetings');
-  multiplyGreetings.addEventListener('click', function(e) {
-    google.appengine.samples.hello.multiplyGreeting(
-        document.querySelector('#greeting').value,
-        document.querySelector('#count').value);
-  });
-
-  var authedGreeting = document.querySelector('#authedGreeting');
-  authedGreeting.addEventListener('click',
-      google.appengine.samples.hello.authedGreeting);
-
   var signinButton = document.querySelector('#signinButton');
   signinButton.addEventListener('click', google.appengine.samples.hello.auth);
 };

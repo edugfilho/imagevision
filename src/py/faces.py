@@ -1,14 +1,8 @@
 from PIL import Image
 from PIL import ImageDraw
-from google.appengine.api import images
 from oauth2client.client import GoogleCredentials
 from googleapiclient import discovery
 import base64
-import os
-
-
-
-
 
 class Faces:
     DISCOVERY_URL='https://{api}.googleapis.com/$discovery/rest?version={apiVersion}'
@@ -20,7 +14,7 @@ class Faces:
         return discovery.build('vision', 'v1', credentials=credentials,
                                discoveryServiceUrl=self.DISCOVERY_URL)
 
-    def detect_face(self, face_file, max_results=4):
+    def detect(self, face_file, type, max_results=4, num_retries=3):
 
         """Uses the Vision API to detect faces in the given file.
 
@@ -36,7 +30,7 @@ class Faces:
                 'content': base64.b64encode(image_content.open().read())
                 },
             'features': [{
-                'type': 'FACE_DETECTION',
+                'type': type,
                 'maxResults': max_results,
                 }]
             }]
@@ -45,9 +39,31 @@ class Faces:
         request = service.images().annotate(body={
             'requests': batch_request,
             })
-        response = request.execute()
+        responses = request.execute(num_retries=num_retries)
 
-        return response['responses'][0]['faceAnnotations']
+        return responses['responses'][0]['textAnnotations']
+        # {
+        #     'TEXT_DETECTION' : responses['responses'][0]['textAnnotations'],
+        #     'FACE_DETECTION' : responses['responses'][0]['faceAnnotations'],
+        # }[type]
+
+    # def text_response(self, responses, image):
+    #     if 'responses' not in responses:
+    #         return {}
+    #     text_response = {}
+    #     for filename, response in zip(images, responses['responses']):
+    #         if 'error' in response:
+    #             print("API Error for %s: %s" % (
+    #                     filename,
+    #                     response['error']['message']
+    #                     if 'message' in response['error']
+    #                     else ''))
+    #             continue
+    #         if 'textAnnotations' in response:
+    #             text_response[filename] = response['textAnnotations']
+    #         else:
+    #             text_response[filename] = []
+    #     return text_response
 
 
     def highlight_faces(self, blob_info, faces):
@@ -60,9 +76,6 @@ class Faces:
           output_filename: the name of the image file to be created, where the faces
               have polygons drawn around them.
         """
-        #from StringIO import StringIO
-        #image_string = StringIO(base64.b64decode(image))
-        #image_string.seek(0)
         im = Image.open(blob_info.open())
         draw = ImageDraw.Draw(im)
 
@@ -73,13 +86,17 @@ class Faces:
         del draw
         return im
 
-    def process_pic(self, blob_info):
-        from StringIO import StringIO
-        faces = self.detect_face(blob_info)
-        #blob_info.open().seek(0)
-        #print('Found %s face%s' % (len(faces), '' if len(faces) == 1 else 's'))
+    def process_pic(self, blob_info, type):
+        return self.detect(blob_info, type)
+        # processed = self.detect(blob_info, type)
+        # return {
+        #     'TEXT_DETECTION' : processed,
+        #     'FACE_DETECTION' : self.return_faces(blob_info, processed),
+        # }[type]
 
-        text_img = self.highlight_faces(blob_info, faces)
+    def return_faces(self, blob_info, processed):
+        from StringIO import StringIO
+        text_img = self.highlight_faces(blob_info, processed)
         output = StringIO()
         text_img.save(output, format="png")
         text_layer = output.getvalue()

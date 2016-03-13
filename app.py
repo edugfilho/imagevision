@@ -5,10 +5,12 @@ as well as those methods defined in an API.
 
 
 import endpoints
+import webapp2
 from protorpc import messages
 from protorpc import message_types
 from protorpc import remote
 from google.appengine.ext import blobstore
+from src.py.servlets import PhotoUploadHandler, ViewPhotoHandler
 
 # TODO: Replace the following lines with client IDs obtained from the APIs
 # Console or Cloud Console.
@@ -88,5 +90,17 @@ class HelloWorldApi(remote.Service):
     def get_upload_url(self, request):
         return Greeting(message=blobstore.create_upload_url('/photo/upload'))
 
+    @endpoints.method(message_types.VoidMessage, Greeting,
+                      path='hellogreeting/docs', http_method='GET',
+                      name='docs.list')
+    def get_docs(self, request):
+        user = endpoints.get_current_user()
+        return Greeting(message=blobstore.create_upload_url('/photo/upload'))
 
-APPLICATION = endpoints.api_server([HelloWorldApi])
+
+ENDPOINTS = endpoints.api_server([HelloWorldApi])
+
+SERVLETS = webapp2.WSGIApplication([
+    ('/photo/upload', PhotoUploadHandler),
+    ('/photo/view/([^/]+)?', ViewPhotoHandler),
+], debug=True)
